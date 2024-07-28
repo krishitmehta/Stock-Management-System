@@ -21,8 +21,8 @@ const fetchUserData = require('./routes/FetchUserData');
 const deleteProductData = require('./routes/DeleteProductData');
 const downloadReportData = require('./routes/DownloadReportData');
 const editProductPrice = require('./routes/EditProductPrice');
-const editStockData = require('./routes/EditStockData');
 const deleteSalesData = require('./routes/DeleteSalesData');
+const deleteBranchData = require('./routes/DeleteBranchData');
 const app = express();
 
 app.use(cors());
@@ -46,8 +46,8 @@ app.use('/api', addUserData);
 app.use('/api', deleteProductData);
 app.use('/api', downloadReportData);
 app.use('/api', editProductPrice);
-app.use('/api', editStockData);
 app.use('/api', deleteSalesData);
+app.use('/api', deleteBranchData);
 
 const port = process.env.PORT || 5000;
 

@@ -5,7 +5,7 @@ const db = require('../connect');
 router.post("/addProductData", (req, res) => {
     const { product_name, product_price } = req.body;
 
-    const stockQuery = "INSERT INTO stock(product_name, opening_stock, added_stock, stock_left) VALUES (?, ?, ?, ?)";
+    const stockQuery = "INSERT INTO stock(product_name, branch_name, opening_stock, added_stock, stock_left) SELECT ?,branch_name,?,?,? FROM branch";
     const productQuery = "INSERT INTO product(product_name, product_price) VALUES (?, ?)";
 
     db.beginTransaction((err) => {

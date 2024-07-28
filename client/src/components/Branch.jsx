@@ -16,6 +16,19 @@ const Branchtable = () => {
         }
         fetchBranch();
     },[])
+    const handleDelete = async(branch_name) => {
+      if (window.confirm(`Are you sure you want to delete branch:${branch_name}?`)) {
+        try {
+          await axios.post("http://localhost:5000/api/deleteBranchData", {
+            branch_name
+          });
+          const response = await axios.post("http://localhost:5000/api/fetchBranchData");
+          setBranchData(response.data);
+        } catch (error) {
+          console.error("Error deleting Branch:", error);
+        }
+      }
+    }
     return(
         <div className="flex-1 flex items-center justify-center p-6">
             <div className="bg-white shadow-md rounded-lg overflow-hidden w-full">
@@ -25,6 +38,7 @@ const Branchtable = () => {
                     <tr>
                       <th className="w-1/8 py-2 px-4">Branch Name</th>
                       <th className="w-1/8 py-2 px-4">Branch Address</th>
+                      <th className="w-1/8 py-2 px-4">Action</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -33,7 +47,14 @@ const Branchtable = () => {
                         <tr key={index} className={index % 2 === 0 ? 'bg-gray-100' : ''}>
                           <td className="border px-4 py-2">{item.branch_name}</td>
                           <td className="border px-4 py-2">{item.branch_address}</td>
-                          {/* <td className="border px-4 py-2"><button>Delete</button></td> */}
+                          <td className="border px-4 py-2">
+                          <button
+                            onClick={() => handleDelete(item.branch_name)}
+                            className="bg-yellow-500 text-white px-2 py-1 rounded"
+                          >
+                             Delete
+                          </button>
+                          </td>
                         </tr>
                       ))
                     ) : (

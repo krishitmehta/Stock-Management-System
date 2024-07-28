@@ -1,164 +1,67 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
-const Stockform = () => {
-  const [products, setProducts] = useState([]);
-  const [selectedProduct, setSelectedProduct] = useState('');
-  const [stockQuantity, setStockQuantity] = useState();
-  const [error, setError] = useState('');
-  const [successMessage, setSuccessMessage] = useState('');
-
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const response = await axios.post("http://localhost:5000/api/fetchProductData");
-        setProducts(response.data);
-      } catch (error) {
-        console.error("Error fetching products:", error);
-      }
-    };
-
-    fetchProducts();
-  }, []);
-
-  const handleProductChange = (e) => {
-    setSelectedProduct(e.target.value);
-  };
-
-  const handleStockChange = (e) => {
-    setStockQuantity(e.target.value);
-  };
-
-  const handleFormSubmit = async (e) => {
-    e.preventDefault();
-    setSuccessMessage('')
-    if (selectedProduct === '' || stockQuantity === '') {
-      setError("Please select a product and enter stock quantity");
-      return;
-    }
-
-    if (stockQuantity <= 0) {
-      setError("Enter a valid stock quantity");
-      return;
-    }
-
-    try {
-      await axios.post("http://localhost:5000/api/addStockData", {
-        product_name: selectedProduct,
-        stock_quantity: stockQuantity,
-      });
-      setSuccessMessage("Stock added successfully");
-      setSelectedProduct('');
-      setStockQuantity('');
-      setError('');
-    } catch (error) {
-      console.error("Error adding stock:", error);
-      setError("Error adding stock. Please try again.");
-    }
-  };
-
-  return (
-    <div className="flex flex-col w-full p-6">
-      <div className="w-full max-w-md bg-white p-6 rounded-lg shadow-md">
-        <h2 className="text-2xl font-bold mb-4">Add Stock</h2>
-        {error && <p className="text-red-500 mb-4">{error}</p>}
-        {successMessage && <p className="text-green-500 mb-4">{successMessage}</p>}
-        <form onSubmit={handleFormSubmit}>
-          <div className="mb-4">
-            <label className="block text-gray-700 font-bold mb-2" htmlFor="product">
-              Select Product
-            </label>
-            <select
-              id="product"
-              value={selectedProduct}
-              onChange={handleProductChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-200"
-            >
-              <option value="">Select a product</option>
-              {products.map((product) => (
-                <option key={product.product_name} value={product.product_name}>
-                  {product.product_name}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div className="mb-4">
-            <label className="block text-gray-700 font-bold mb-2" htmlFor="stock">
-              Stock Quantity
-            </label>
-            <input
-              type="number"
-              id="stock"
-              value={stockQuantity}
-              placeholder={0}
-              onChange={handleStockChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-200"
-            />
-          </div>
-          <button
-            type="submit"
-            className="w-full py-2 px-4 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
-          >
-            Add Stock
-          </button>
-        </form>
-      </div>
-    </div>
-  );
-};
-
-const Stocktable = () => {
+const Stocktable = ({ selectedBranch }) => {
   const [stockData, setStockData] = useState([]);
-  const [editingIndex, setEditingIndex] = useState(null);
-  const [editingValue, setEditingValue] = useState('');
-  const [originalAddedStock, setOriginalAddedStock] = useState(null);
-  const [error,setError] = useState('');
+  const [addingIndex, setAddingIndex] = useState(null);
+  const [addingValue, setAddingValue] = useState(0);
+  const [error, setError] = useState('');
+  const [message, setMessage] = useState('');
 
   useEffect(() => {
     const fetchStockData = async () => {
       try {
         const response = await axios.post("http://localhost:5000/api/fetchStockData");
         setStockData(response.data);
+        setError('');
+        setMessage('');
       } catch (error) {
         console.error("Error fetching products:", error);
+        setError("Failed to fetch stock data. Please try again later.");
       }
     };
 
     fetchStockData();
   }, []);
 
-  const handleEditClick = (index, currentValue) => {
-    setEditingIndex(index);
-    setEditingValue(currentValue);
-    setOriginalAddedStock(currentValue); // Store the original added stock value
+  const handleAddClick = (index) => {
+    setAddingIndex(index);
+    setAddingValue(0);
   };
 
   const handleInputChange = (e) => {
-    const newValue = e.target.value < 0 ? -e.target.value : e.target.value;
-    const stockLeft = stockData[editingIndex].stock_left + parseInt(newValue) - originalAddedStock;
-
-    if (stockLeft >= 0) {
-      setEditingValue(newValue);
-    } else {
-      setError("Invalid stock value. Resulting stock left cannot be negative.");
-    }
+    const value = e.target.value;
+    setAddingValue(value);
   };
 
-  const handleSaveClick = async (product_name) => {
+  const handleSaveClick = async (product_name, branch_name) => {
+    if (addingValue < 0 || isNaN(addingValue)) {
+      setError("Invalid stock quantity. Please enter a positive number.");
+      return;
+    }
+
     try {
-      await axios.post("http://localhost:5000/api/editStockData", {
+      await axios.post("http://localhost:5000/api/addStockData", {
         product_name,
-        added_stock: editingValue,
+        added_stock: addingValue,
+        branch_name
       });
       const response = await axios.post("http://localhost:5000/api/fetchStockData");
       setStockData(response.data);
-      setEditingIndex(null);
-      setEditingValue('');
-      setOriginalAddedStock(null); // Reset the original added stock value
+      setAddingIndex(null);
+      setAddingValue(0);
+      setError('');
+      setMessage('Stock Added Successfully')
     } catch (error) {
       console.error("Error updating stock:", error);
+      setError("Failed to update stock. Please try again later.");
+      setMessage('');
     }
   };
+
+  const filteredStockData = selectedBranch === 'All'
+    ? stockData
+    : stockData.filter(item => item.branch_name === selectedBranch);
 
   return (
     <div className="flex-1 flex items-center justify-center p-6">
@@ -168,6 +71,7 @@ const Stocktable = () => {
             <thead className="bg-gray-800 text-white">
               <tr>
                 <th className="w-1/8 py-2 px-4">Product Name</th>
+                <th className="w-1/8 py-2 px-4">Branch Name</th>
                 <th className="w-1/8 py-2 px-4">Opening Stock</th>
                 <th className="w-1/8 py-2 px-4">Added Stock</th>
                 <th className="w-1/8 py-2 px-4">Stock left</th>
@@ -175,16 +79,20 @@ const Stocktable = () => {
               </tr>
             </thead>
             <tbody>
-              {stockData.length > 0 ? (
-                stockData.map((item, index) => (
+              <tr>
+                <td colSpan="8" className="border px-4 py-2">{error && <p className="text-red-500">{error}</p>}{message && <p className="text-green-500">{message}</p>}</td>
+              </tr>
+              {filteredStockData.length > 0 ? (
+                filteredStockData.map((item, index) => (
                   <tr key={index} className={index % 2 === 0 ? 'bg-gray-100' : ''}>
                     <td className="border px-4 py-2">{item.product_name}</td>
+                    <td className="border px-4 py-2">{item.branch_name}</td>
                     <td className="border px-4 py-2">{item.opening_stock}</td>
                     <td className="border px-4 py-2">
-                      {editingIndex === index ? (
+                      {addingIndex === index ? (
                         <input
                           type="number"
-                          value={editingValue}
+                          value={addingValue}
                           onChange={handleInputChange}
                           className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-200"
                         />
@@ -194,19 +102,19 @@ const Stocktable = () => {
                     </td>
                     <td className="border px-4 py-2">{item.stock_left}</td>
                     <td className="border px-4 py-2">
-                      {editingIndex === index ? (
+                      {addingIndex === index ? (
                         <button
-                          onClick={() => handleSaveClick(item.product_name)}
+                          onClick={() => handleSaveClick(item.product_name, item.branch_name)}
                           className="bg-blue-500 text-white px-2 py-1 rounded"
                         >
                           Save
                         </button>
                       ) : (
                         <button
-                          onClick={() => handleEditClick(index, item.added_stock)}
+                          onClick={() => handleAddClick(index, item.added_stock)}
                           className="bg-yellow-500 text-white px-2 py-1 rounded"
                         >
-                          Edit
+                          Add
                         </button>
                       )}
                     </td>
@@ -214,30 +122,60 @@ const Stocktable = () => {
                 ))
               ) : (
                 <tr>
-                  <td colSpan="5" className="border px-4 py-2 text-center">No data available</td>
+                  <td colSpan="6" className="border px-4 py-2 text-center">No data available</td>
                 </tr>
               )}
             </tbody>
           </table>
         </div>
+        {error && <div className="text-red-500 text-center mt-2">{error}</div>}
       </div>
     </div>
   );
 };
 
 const Stock = () => {
-  const [showForm, setShowForm] = useState(false);
+  const [branch, setBranch] = useState('All');
+  const [branches, setBranches] = useState([]);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    const fetchBranches = async () => {
+      try {
+        const response = await axios.post('http://localhost:5000/api/fetchBranchdata');
+        setBranches(response.data);
+        setError('');
+      } catch (error) {
+        console.error('Error fetching branches:', error);
+        setError("Failed to fetch branch data. Please try again later.");
+        setBranches([]); // Ensure branches is set to an empty array on error
+      }
+    };
+
+    fetchBranches();
+  }, []);
+
   return (
     <div>
       <div className="w-full px-6 py-2 bg-gray-900 flex justify-end">
-        <button
-          onClick={() => setShowForm(!showForm)}
-          className="text-white font-bold p-2 bg-blue-500 hover:bg-blue-700 rounded"
-        >
-          {showForm ? "Close Form" : "Add Stock"}
-        </button>
+        <div>
+          <label className="text-white mr-2">Select Branch:</label>
+          <select
+            value={branch}
+            onChange={(e) => setBranch(e.target.value)}
+            className="p-2 bg-gray-700 text-white rounded"
+          >
+            <option value="All">All</option>
+            {Array.isArray(branches) && branches.map((branchItem) => (
+              <option key={branchItem.branch_name} value={branchItem.branch_name}>
+                {branchItem.branch_name}
+              </option>
+            ))}
+          </select>
+        </div>
       </div>
-      {showForm ? <Stockform /> : <Stocktable />}
+      {error && <div className="text-red-500 text-center mt-2">{error}</div>}
+      <Stocktable selectedBranch={branch} />
     </div>
   );
 };

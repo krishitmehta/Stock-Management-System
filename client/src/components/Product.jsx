@@ -152,7 +152,6 @@ const Product = () => {
             <div key={product.product_name} className="bg-yellow-200 shadow-md rounded-lg p-4">
               <h2 className="text-xl font-bold mb-2">{product.product_name}</h2>
               <p className="text-gray-700">Price: ₹{product.product_price}</p>
-              <p className="text-gray-700">Stock: {product.stock_left}</p>
               <button
                 onClick={() => handleDelete(product.product_name)}
                 className="text-white px-2 py-1 mr-2 bg-red-500 hover:bg-red-700 rounded"

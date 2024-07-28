@@ -51,6 +51,7 @@ const Report = () => {
               <thead className="bg-gray-800 text-white">
                 <tr>
                   <th className="w-1/8 py-2 px-4">Product Name</th>
+                  <th className="w-1/8 py-2 px-4">Branch Name</th>
                   <th className="w-1/8 py-2 px-4">Date</th>
                   <th className="w-1/8 py-2 px-4">Sales Quantity</th>
                   <th className="w-1/8 py-2 px-4">Price</th>
@@ -63,6 +64,7 @@ const Report = () => {
                   stockData.map((item, index) => (
                     <tr key={index} className={index % 2 === 0 ? 'bg-gray-100' : ''}>
                       <td className="border px-4 py-2">{item.product_name}</td>
+                      <td className="border px-4 py-2">{item.branch_name}</td>
                       <td className="border px-4 py-2">{format(toZonedTime(item.date, 'Asia/Kolkata'),'yyyy-MM-dd', 'Asia/Kolkata')}</td>
                       <td className="border px-4 py-2">{item.sales_quantity}</td>
                       <td className="border px-4 py-2">{item.price}</td>
