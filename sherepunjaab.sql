@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 27, 2024 at 12:15 PM
+-- Generation Time: Jul 28, 2024 at 09:44 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -107,7 +107,7 @@ CREATE TABLE `task_status` (
 --
 
 INSERT INTO `task_status` (`id`, `task_name`, `last_run_date`) VALUES
-(1, 'daily_stock_update', '2024-07-27');
+(1, 'daily_stock_update', '2024-07-28');
 
 -- --------------------------------------------------------
 
@@ -126,9 +126,7 @@ CREATE TABLE `user` (
 --
 
 INSERT INTO `user` (`username`, `password`, `role`) VALUES
-('admin@gmail.com', '$2b$10$LeFr/ZsPRIzEhtjMRdiAWuqBGeaMzvuDzI5SZ5u0NC3SRDJx2q5Pi', 0),
-('krishi@gmail.com', '$2b$10$gst1OPqRMPi.cG20969rx.JGlgPVDnudMnMHNuX8h0PE8eMMhcnE6', 0),
-('krishit@gmail.com', '$2b$10$nxKg3BVTqqcxKm8m9BPoBu9iNRc5oOe31POx.Fxf9P88tTrluv4/i', 0);
+('admin@gmail.com', '$2b$10$LeFr/ZsPRIzEhtjMRdiAWuqBGeaMzvuDzI5SZ5u0NC3SRDJx2q5Pi', 0);
 
 -- --------------------------------------------------------
 
@@ -142,15 +140,6 @@ CREATE TABLE `useremp` (
   `phone` int(10) NOT NULL,
   `branch_name` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `useremp`
---
-
-INSERT INTO `useremp` (`name`, `email`, `phone`, `branch_name`) VALUES
-('KRISHIR', 'admintest@gmail.com', 2147483647, 'SURAT'),
-('HET SHAH', 'hetshah17003@gmail.com', 2147483647, 'NAVSARI'),
-('KRISHIT MEHTA', 'krishitajbani@gmail.com', 2147483647, 'SURAT');
 
 --
 -- Indexes for dumped tables
@@ -181,12 +170,6 @@ ALTER TABLE `sales`
   ADD PRIMARY KEY (`sales_id`);
 
 --
--- Indexes for table `stock`
---
-ALTER TABLE `stock`
-  ADD PRIMARY KEY (`product_name`(255));
-
---
 -- Indexes for table `task_status`
 --
 ALTER TABLE `task_status`
@@ -212,13 +195,13 @@ ALTER TABLE `useremp`
 -- AUTO_INCREMENT for table `report`
 --
 ALTER TABLE `report`
-  MODIFY `sales_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
+  MODIFY `sales_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
 
 --
 -- AUTO_INCREMENT for table `sales`
 --
 ALTER TABLE `sales`
-  MODIFY `sales_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
+  MODIFY `sales_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
 
 --
 -- AUTO_INCREMENT for table `task_status`
