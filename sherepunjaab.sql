@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 05, 2024 at 08:21 AM
+-- Generation Time: Jul 28, 2024 at 09:44 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -32,14 +32,6 @@ CREATE TABLE `branch` (
   `branch_address` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `branch`
---
-
-INSERT INTO `branch` (`branch_name`, `branch_address`) VALUES
-('NAVSARI', 'XYZ,123456'),
-('SURAT', 'ABC,789654');
-
 -- --------------------------------------------------------
 
 --
@@ -51,23 +43,6 @@ CREATE TABLE `product` (
   `product_price` int(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `product`
---
-
-INSERT INTO `product` (`product_name`, `product_price`) VALUES
-('BANANA JUICE', 30),
-('BANANA MILKSHAKE', 70),
-('BANANA SMOOTHE', 35),
-('BLUEBERRY LASSI', 35),
-('CHICKOO JUICE', 30),
-('CHICO JUICE', 40),
-('CHOCOLATE LASSI', 25),
-('MANGO LASSI', 45),
-('MANGO MILKSHAKE', 30),
-('MANGO SHAKE', 25),
-('PINEAPPLE LASSI', 30);
-
 -- --------------------------------------------------------
 
 --
@@ -76,6 +51,7 @@ INSERT INTO `product` (`product_name`, `product_price`) VALUES
 
 CREATE TABLE `report` (
   `product_name` text NOT NULL,
+  `branch_name` text NOT NULL,
   `date` date NOT NULL,
   `sales_quantity` int(255) NOT NULL,
   `price` int(255) NOT NULL,
@@ -83,18 +59,6 @@ CREATE TABLE `report` (
   `paymode` text NOT NULL,
   `sales_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `report`
---
-
-INSERT INTO `report` (`product_name`, `date`, `sales_quantity`, `price`, `amount`, `paymode`, `sales_id`) VALUES
-('BANANA JUICE', '2024-06-11', 30, 20, 600, 'Zomato', 24),
-('BANANA JUICE', '2024-06-14', 20, 20, 400, 'Zomato', 25),
-('PINEAPPLE LASSI', '2024-06-14', 30, 30, 900, 'Cash', 27),
-('BANANA JUICE', '2024-06-14', 20, 30, 600, 'Online', 28),
-('BANANA JUICE', '2024-06-14', 30, 30, 900, 'Online', 29),
-('BLUEBERRY LASSI', '2024-07-05', 5, 35, 175, 'Cash', 30);
 
 -- --------------------------------------------------------
 
@@ -105,22 +69,11 @@ INSERT INTO `report` (`product_name`, `date`, `sales_quantity`, `price`, `amount
 CREATE TABLE `sales` (
   `sales_id` int(11) NOT NULL,
   `product_name` text NOT NULL,
+  `branch_name` text NOT NULL,
   `date` date NOT NULL DEFAULT current_timestamp(),
   `sale_quantity` int(255) NOT NULL,
   `paymode` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `sales`
---
-
-INSERT INTO `sales` (`sales_id`, `product_name`, `date`, `sale_quantity`, `paymode`) VALUES
-(24, 'BANANA JUICE', '2024-06-11', 30, 'Zomato'),
-(25, 'BANANA JUICE', '2024-06-14', 20, 'Zomato'),
-(27, 'PINEAPPLE LASSI', '2024-06-14', 30, 'Cash'),
-(28, 'BANANA JUICE', '2024-06-14', 20, 'Online'),
-(29, 'BANANA JUICE', '2024-06-14', 30, 'Online'),
-(30, 'BLUEBERRY LASSI', '2024-07-05', 5, 'Cash');
 
 -- --------------------------------------------------------
 
@@ -130,28 +83,12 @@ INSERT INTO `sales` (`sales_id`, `product_name`, `date`, `sale_quantity`, `paymo
 
 CREATE TABLE `stock` (
   `product_name` text NOT NULL,
+  `branch_name` text NOT NULL,
   `date` date NOT NULL DEFAULT current_timestamp(),
   `opening_stock` int(255) NOT NULL,
   `added_stock` int(255) NOT NULL,
   `stock_left` int(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `stock`
---
-
-INSERT INTO `stock` (`product_name`, `date`, `opening_stock`, `added_stock`, `stock_left`) VALUES
-('BANANA JUICE', '2024-06-11', 125, 0, 125),
-('BANANA MILKSHAKE', '2024-06-11', 0, 0, 0),
-('BANANA SMOOTHE', '2024-06-11', 32, 0, 32),
-('BLUEBERRY LASSI', '2024-06-05', 13, 0, 8),
-('CHICKOO JUICE', '2024-06-11', 0, 0, 0),
-('CHICO JUICE', '2024-06-11', 0, 0, 0),
-('CHOCOLATE LASSI', '2024-06-05', 0, 0, 0),
-('MANGO LASSI', '2024-06-05', 0, 0, 0),
-('MANGO MILKSHAKE', '2024-06-11', 0, 0, 0),
-('MANGO SHAKE', '2024-06-05', 1, 0, 1),
-('PINEAPPLE LASSI', '2024-06-11', 4, 0, 4);
 
 -- --------------------------------------------------------
 
@@ -170,7 +107,7 @@ CREATE TABLE `task_status` (
 --
 
 INSERT INTO `task_status` (`id`, `task_name`, `last_run_date`) VALUES
-(1, 'daily_stock_update', '2024-07-05');
+(1, 'daily_stock_update', '2024-07-28');
 
 -- --------------------------------------------------------
 
@@ -205,14 +142,6 @@ CREATE TABLE `useremp` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `useremp`
---
-
-INSERT INTO `useremp` (`name`, `email`, `phone`, `branch_name`) VALUES
-('HET SHAH', 'hetshah17003@gmail.com', 2147483647, 'NAVSARI'),
-('KRISHIT MEHTA', 'krishitajbani@gmail.com', 2147483647, 'SURAT');
-
---
 -- Indexes for dumped tables
 --
 
@@ -241,12 +170,6 @@ ALTER TABLE `sales`
   ADD PRIMARY KEY (`sales_id`);
 
 --
--- Indexes for table `stock`
---
-ALTER TABLE `stock`
-  ADD PRIMARY KEY (`product_name`(255));
-
---
 -- Indexes for table `task_status`
 --
 ALTER TABLE `task_status`
@@ -272,13 +195,13 @@ ALTER TABLE `useremp`
 -- AUTO_INCREMENT for table `report`
 --
 ALTER TABLE `report`
-  MODIFY `sales_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
+  MODIFY `sales_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
 
 --
 -- AUTO_INCREMENT for table `sales`
 --
 ALTER TABLE `sales`
-  MODIFY `sales_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
+  MODIFY `sales_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
 
 --
 -- AUTO_INCREMENT for table `task_status`
