@@ -30,23 +30,23 @@ const Dashboard = () => {
         setSales(response1.data[0].total_sales);
         setAmount(response1.data[0].total_amount);
 
-        const response2 = await axios.post('http://localhost:5000/api/fetchDashboardData/group', {
-          paymode: 'Zomato',
-          branch
-        });
-        setZomato(parseInt(response2.data[0].total_amount, 10));
+        // const response2 = await axios.post('http://localhost:5000/api/fetchDashboardData/group', {
+        //   paymode: 'Zomato',
+        //   branch
+        // });
+        // setZomato(parseInt(response2.data[0].total_amount, 10));
 
-        const response3 = await axios.post('http://localhost:5000/api/fetchDashboardData/group', {
-          paymode: 'Online',
-          branch
-        });
-        setOnline(response3.data[0].total_amount);
+        // const response3 = await axios.post('http://localhost:5000/api/fetchDashboardData/group', {
+        //   paymode: 'Online',
+        //   branch
+        // });
+        // setOnline(response3.data[0].total_amount);
 
-        const response4 = await axios.post('http://localhost:5000/api/fetchDashboardData/group', {
-          paymode: 'Cash',
-          branch
-        });
-        setCash(response4.data[0].total_amount);
+        // const response4 = await axios.post('http://localhost:5000/api/fetchDashboardData/group', {
+        //   paymode: 'Cash',
+        //   branch
+        // });
+        // setCash(response4.data[0].total_amount);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -84,7 +84,7 @@ const Dashboard = () => {
           <p className="text-2xl text-center">{sales ? sales : 0}</p>
         </div>
       </div>
-      <div className="flex flex-row h-fit">
+      {/* <div className="flex flex-row h-fit">
         <div className="bg-red-200 shadow-md rounded-lg p-6 m-4 w-64">
           <h2 className="text-xl font-bold mb-4 text-center">Total Online</h2>
           <p className="text-2xl text-center">{online ? online : 0}</p>
@@ -97,7 +97,7 @@ const Dashboard = () => {
           <h2 className="text-xl font-bold mb-4 text-center">Total Zomato</h2>
           <p className="text-2xl text-center">{zomato ? zomato : 0}</p>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };

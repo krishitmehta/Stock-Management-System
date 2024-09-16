@@ -3,7 +3,7 @@ const router = express.Router();
 const db = require('../connect');
 
 router.post("/fetchReportData",(req,res) => {
-    const query = "SELECT product_name,branch_name,date,sales_quantity,price,amount,paymode FROM report ORDER BY sales_id DESC";
+    const query = "SELECT product_name,branch_name,date,sales_quantity,price,amount FROM report ORDER BY sales_id DESC";
     db.query(query, (err,data)=>{
         if (err) {
             console.error("Internal server error", err);

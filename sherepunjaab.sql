@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 28, 2024 at 10:35 AM
+-- Generation Time: Sep 16, 2024 at 06:12 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -32,6 +32,13 @@ CREATE TABLE `branch` (
   `branch_address` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `branch`
+--
+
+INSERT INTO `branch` (`branch_name`, `branch_address`) VALUES
+('NAVSARI', 'ABC, 123');
+
 -- --------------------------------------------------------
 
 --
@@ -42,6 +49,14 @@ CREATE TABLE `product` (
   `product_name` text NOT NULL,
   `product_price` int(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `product`
+--
+
+INSERT INTO `product` (`product_name`, `product_price`) VALUES
+('BLUEBERRY LASSI', 35),
+('CHOCOLATE LASSI', 30);
 
 -- --------------------------------------------------------
 
@@ -56,9 +71,18 @@ CREATE TABLE `report` (
   `sales_quantity` int(255) NOT NULL,
   `price` int(255) NOT NULL,
   `amount` int(255) NOT NULL,
-  `paymode` text NOT NULL,
   `sales_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `report`
+--
+
+INSERT INTO `report` (`product_name`, `branch_name`, `date`, `sales_quantity`, `price`, `amount`, `sales_id`) VALUES
+('CHOCOLATE LASSI', 'NAVSARI', '2024-09-16', 20, 30, 600, 23),
+('CHOCOLATE LASSI', 'NAVSARI', '2024-09-16', 10, 30, 300, 24),
+('BLUEBERRY LASSI', 'NAVSARI', '2024-09-16', 20, 35, 700, 25),
+('CHOCOLATE LASSI', 'NAVSARI', '2024-09-16', 30, 30, 900, 26);
 
 -- --------------------------------------------------------
 
@@ -71,9 +95,23 @@ CREATE TABLE `sales` (
   `product_name` text NOT NULL,
   `branch_name` text NOT NULL,
   `date` date NOT NULL DEFAULT current_timestamp(),
-  `sale_quantity` int(255) NOT NULL,
-  `paymode` text NOT NULL
+  `sale_quantity` int(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `sales`
+--
+
+INSERT INTO `sales` (`sales_id`, `product_name`, `branch_name`, `date`, `sale_quantity`) VALUES
+(3, 'CHOCOLATE LASSI', 'PANCH HATTDI', '2024-08-17', 0),
+(4, 'CHOCOLATE LASSI', 'PANCH HATTDI', '2024-08-17', 100),
+(5, 'CHOCOLATE LASSI', 'PANCH HATTDI', '2024-08-23', 40),
+(6, 'CHOCOLATE LASSI', 'PANCH HATTDI', '2024-08-23', 0),
+(7, 'MANGO SHAKE', 'ASHAPURI', '2024-08-23', 10),
+(8, 'CHOCOLATE LASSI', 'PANCH HATTDI', '2024-09-09', 0),
+(9, 'CHOCOLATE LASSI', 'PANCH HATTDI', '2024-09-09', 20),
+(10, 'CHOCOLATE LASSI', 'PANCH HATTDI', '2024-09-09', 20),
+(11, 'CHOCOLATE LASSI', 'ASHAPURI', '2024-09-09', 10);
 
 -- --------------------------------------------------------
 
@@ -89,6 +127,14 @@ CREATE TABLE `stock` (
   `added_stock` int(255) NOT NULL,
   `stock_left` int(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `stock`
+--
+
+INSERT INTO `stock` (`product_name`, `branch_name`, `date`, `opening_stock`, `added_stock`, `stock_left`) VALUES
+('CHOCOLATE LASSI', 'NAVSARI', '2024-09-16', 0, 40, 10),
+('BLUEBERRY LASSI', 'NAVSARI', '2024-09-16', 0, 30, 10);
 
 -- --------------------------------------------------------
 
@@ -107,7 +153,7 @@ CREATE TABLE `task_status` (
 --
 
 INSERT INTO `task_status` (`id`, `task_name`, `last_run_date`) VALUES
-(1, 'daily_stock_update', '2024-07-28');
+(1, 'daily_stock_update', '2024-09-16');
 
 -- --------------------------------------------------------
 
@@ -120,13 +166,6 @@ CREATE TABLE `user` (
   `password` varchar(255) NOT NULL,
   `role` int(1) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `user`
---
-
-INSERT INTO `user` (`username`, `password`, `role`) VALUES
-('admin@gmail.com', '$2b$10$LeFr/ZsPRIzEhtjMRdiAWuqBGeaMzvuDzI5SZ5u0NC3SRDJx2q5Pi', 0);
 
 -- --------------------------------------------------------
 
@@ -195,13 +234,13 @@ ALTER TABLE `useremp`
 -- AUTO_INCREMENT for table `report`
 --
 ALTER TABLE `report`
-  MODIFY `sales_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
+  MODIFY `sales_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 
 --
 -- AUTO_INCREMENT for table `sales`
 --
 ALTER TABLE `sales`
-  MODIFY `sales_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
+  MODIFY `sales_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `task_status`

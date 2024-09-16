@@ -3,14 +3,14 @@ const router = express.Router();
 const db = require('../connect');
 
 router.post("/addSaleData", (req, res) => {
-    const { product_name, sale_quantity, paymode, branch_name } = req.body; // Include branch_name
-    console.log('Received data:', { product_name, sale_quantity, paymode, branch_name });
+    const { product_name, sale_quantity, branch_name } = req.body; // Include branch_name
+    console.log('Received data:', { product_name, sale_quantity, branch_name });
 
-    const addsalequery = "INSERT INTO sales(product_name, sale_quantity, paymode, branch_name) VALUES (?, ?, ?, ?)";
+    const addsalequery = "INSERT INTO sales(product_name, sale_quantity, branch_name) VALUES (?, ?, ?)";
     const stockleftquery = "UPDATE stock SET stock_left = stock_left - ? WHERE product_name = ? AND stock_left >= ? AND branch_name=?";
-    const reportquery = `INSERT INTO report(sales_id, product_name, date, sales_quantity, price, amount, paymode, branch_name) 
+    const reportquery = `INSERT INTO report(sales_id, product_name, date, sales_quantity, price, amount, branch_name) 
                          SELECT sales.sales_id, product.product_name, DATE(sales.date) AS date, sales.sale_quantity, 
-                                product.product_price, product.product_price * sales.sale_quantity AS amount, sales.paymode, sales.branch_name 
+                                product.product_price, product.product_price * sales.sale_quantity AS amount, sales.branch_name 
                          FROM product 
                          INNER JOIN sales ON sales.product_name = product.product_name 
                          WHERE sales.sales_id = ?`;
@@ -33,7 +33,7 @@ router.post("/addSaleData", (req, res) => {
                     res.json({ success: false, message: 'Insufficient Stock' });
                 });
             } else {
-                db.query(addsalequery, [product_name, sale_quantity, paymode, branch_name], (err, result) => {
+                db.query(addsalequery, [product_name, sale_quantity, branch_name], (err, result) => {
                     if (err) {
                         return db.rollback(() => {
                             console.error("Sales insert error:", err);

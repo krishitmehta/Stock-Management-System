@@ -56,7 +56,6 @@ const Report = () => {
                   <th className="w-1/8 py-2 px-4">Sales Quantity</th>
                   <th className="w-1/8 py-2 px-4">Price</th>
                   <th className="w-1/8 py-2 px-4">Amount</th>
-                  <th className="w-1/8 py-2 px-4">Payment Mode</th>
                 </tr>
               </thead>
               <tbody>
@@ -69,7 +68,6 @@ const Report = () => {
                       <td className="border px-4 py-2">{item.sales_quantity}</td>
                       <td className="border px-4 py-2">{item.price}</td>
                       <td className="border px-4 py-2">{item.amount}</td>
-                      <td className="border px-4 py-2">{item.paymode}</td>
                     </tr>
                   ))
                 ) : (
