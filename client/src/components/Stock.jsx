@@ -13,10 +13,24 @@ const Stocktable = () => {
   const [cash, setCash] = useState('');
   const [gpay, setGpay] = useState('');
   const [zomato, setZomato] = useState('');
-  const [expenses, setExpenses] = useState('');
 
-  const totalAmount = parseFloat(cash || 0) + parseFloat(gpay || 0) + parseFloat(zomato || 0) + parseFloat(expenses || 0);
+  const [notexpenses, setNotexpenses] = useState([{ note: "", price: "" }]);
 
+  const totalNoteamount = notexpenses.reduce((sum, expense) => sum + (parseFloat(expense.price) || 0), 0);
+  const totalAmount = parseFloat(cash || 0) + parseFloat(gpay || 0) + parseFloat(zomato || 0) + parseFloat(totalNoteamount || 0);
+  const addExpense = () => {
+    setNotexpenses([...notexpenses, { note: "", price: "" }]);
+  };
+  const deleteExpense = (index) => {
+    const newExpenses = notexpenses.filter((_, i) => i !== index);
+    setNotexpenses(newExpenses);
+  };
+
+  const handleInputChange = (index, field, value) => {
+    const newExpenses = [...notexpenses];
+    newExpenses[index][field] = value;
+    setNotexpenses(newExpenses);
+  };
   useEffect(() => {
     const fetchStockData = async () => {
       try {
@@ -88,10 +102,13 @@ const Stocktable = () => {
           added_stock: data.added_stock,
           stock_left: data.stock_left,
           branch_name: data.branch_name,
-          price: data.price
+          price: data.price,
         });
       }));
-  
+      await axios.post("http://localhost:5000/api/addExpenseData", {
+        expense_type: {gpay:gpay, cash:cash, zomato:zomato, expenses: totalNoteamount},
+        expense_note: notexpenses
+      });
       // Fetch updated data
       const response = await axios.post("http://localhost:5000/api/fetchStockData");
       setStockData(response.data);
@@ -129,6 +146,7 @@ const Stocktable = () => {
   const netAmountBeforeFilter = totalTableAmount - totalAmount;
 
   return (
+    <div className="h-screen overflow-auto">
     <div className="flex flex-col items-center">
       {/* Sticky Header */}
       <div className="sticky top-0 bg-white shadow-md z-10 w-full max-w-4xl p-4 mb-6 border-b border-gray-300 flex justify-between items-center">
@@ -211,7 +229,6 @@ const Stocktable = () => {
                 <td className="border px-4 py-2 font-semibold">{totalTableAmount.toFixed(2)}</td>
                 <td className="border px-4 py-2 text-right">
                   <button
-                    onClick={handleSaveClick}
                     className="bg-blue-500 text-white px-4 py-2 rounded"
                   >
                     Save
@@ -224,7 +241,7 @@ const Stocktable = () => {
       </div>
 
       {/* Form Card */}
-      <div className="w-full max-w-4xl bg-white shadow-md rounded-lg p-6">
+      <div className="w-full max-w-4xl bg-white shadow-md rounded-lg p-6 mb-6">
         <h3 className="text-lg font-semibold mb-4">Expense Form</h3>
         <div className="flex flex-col gap-4">
           <div className="flex gap-4">
@@ -261,8 +278,8 @@ const Stocktable = () => {
               <label className="block text-gray-700">Expenses</label>
               <input
                 type="number"
-                value={expenses}
-                onChange={(e) => setExpenses(e.target.value)}
+                value={totalNoteamount}
+                disabled
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-200"
               />
             </div>
@@ -272,6 +289,39 @@ const Stocktable = () => {
           </div>
         </div>
       </div>
+      <div className="w-full max-w-4xl bg-white shadow-md rounded-lg p-6 mb-6">
+      <h3 className="text-lg font-semibold mb-4">Expense Note</h3>
+      {notexpenses.map((expense, index) => (
+        <div key={index} className="flex space-x-2 mb-2">
+          <input
+            type="text"
+            placeholder="Expense Note"
+            value={expense.note}
+            onChange={(e) => handleInputChange(index, "note", e.target.value)}
+            className="flex-grow px-3 py-2 border border-gray-300 rounded-md"
+          />
+          <input
+            type="number"
+            placeholder="Price"
+            value={expense.price}
+            onChange={(e) => handleInputChange(index, "price", e.target.value)}
+            className="w-24 px-3 py-2 border border-gray-300 rounded-md"
+          />
+          <button onClick={() => deleteExpense(index)} className="bg-red-500 text-white px-2 py-1 rounded-md">
+            Delete
+          </button>
+        </div>
+      ))}
+      <div className="flex">
+      <button onClick={handleSaveClick} disabled={notexpenses.some(expense => expense.note.trim() === "" || expense.price === "")} className="w-full bg-blue-500 text-white py-2 rounded-md m-2">
+        Save Data
+      </button>
+      <button onClick={addExpense} className="w-full bg-blue-500 text-white py-2 rounded-md m-2">
+        Add Expense
+      </button>
+      </div>
+    </div>
+    </div>
     </div>
   );
 };

@@ -23,6 +23,9 @@ const downloadReportData = require('./routes/DownloadReportData');
 const editProductPrice = require('./routes/EditProductPrice');
 const deleteSalesData = require('./routes/DeleteSalesData');
 const deleteBranchData = require('./routes/DeleteBranchData');
+const addExpenseData = require('./routes/addExpenseData');
+const fetchExpenseType = require('./routes/FetchExpenseType');
+const fetchExpenseNote = require('./routes/FetchExpensenote');
 const app = express();
 
 app.use(cors());
@@ -48,6 +51,9 @@ app.use('/api', downloadReportData);
 app.use('/api', editProductPrice);
 app.use('/api', deleteSalesData);
 app.use('/api', deleteBranchData);
+app.use('/api', addExpenseData);
+app.use('/api', fetchExpenseType);
+app.use('/api', fetchExpenseNote);
 
 const port = process.env.PORT || 5000;
 

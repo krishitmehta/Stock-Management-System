@@ -2,33 +2,31 @@ const express = require('express');
 const router = express.Router();
 const db = require('../connect');
 
-router.post("/addStockData", (req, res) => {
-    const { product_name, added_stock, stock_left, branch_name, price, opening_stock, expense_type, expense_note } = req.body;
-    const sales_quantity = opening_stock + added_stock - stock_left;
-    const addquery = "UPDATE stock SET added_stock = ?, stock_left = ? WHERE product_name = ? AND branch_name = ?";
-    const reportquery = "INSERT INTO report(product_name, sales_quantity, price, amount, branch_name, date) VALUES (?,?,?,?,?,CURRENT_DATE)";
-
+router.post("/addExpenseData", (req, res) => {
+    const {expense_type, expense_note}= req.body
+    const expenseTypeQuery = "INSERT INTO expense_type (cash,gpay,zomato,expenses) VALUES (?,?,?,?)"
+    const expenseNoteQuery = "INSERT INTO expense_note (note,amount) VALUES ?"
     db.beginTransaction((err) => {
         if (err) {
             console.error("Transaction error:", err);
-            return res.status(500).json({ success: false, message: 'Transaction error' });
+            return res.status(500).json({ error: "Transaction error" });
         }
-
-        db.query(reportquery, [product_name, sales_quantity, price, sales_quantity * price, branch_name], (err, data) => {
+        db.query(expenseTypeQuery, [expense_type.cash,expense_type.gpay,expense_type.zomato,expense_type.expenses], (err, data) => {
             if (err) {
                 return db.rollback(() => {
                     console.error("Internal server error:", err);
-                    res.status(500).json({ success: false, message: 'Internal Server Error in product table' });
+                    res.status(500).json({ success: false, message: 'Internal Server Error in expense_type table' });
                 });
             }
-
-            db.query(addquery, [added_stock, stock_left, product_name, branch_name], (err, data) => {
+            const expenseValues = expense_note.map(expense => [expense.note, expense.price]);
+            db.query(expenseNoteQuery, [expenseValues], (err, data) => {
                 if (err) {
                     return db.rollback(() => {
                         console.error("Internal server error:", err);
-                        res.status(500).json({ success: false, message: 'Internal Server Error in stock table' });
+                        res.status(500).json({ success: false, message: 'Internal Server Error in expense_note table' });
                     });
                 }
+        
                 db.commit((err) => {
                     if (err) {
                         return db.rollback(() => {
